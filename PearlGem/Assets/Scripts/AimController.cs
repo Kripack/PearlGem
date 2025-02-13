@@ -58,13 +58,11 @@ namespace PearlGem
         
         void OnPress(InputAction.CallbackContext context)
         {
-            // Запустити перевірку в наступному кадрі через коутину
             StartCoroutine(CheckUIOverlap(context));
         }
 
-        private IEnumerator CheckUIOverlap(InputAction.CallbackContext context)
+        IEnumerator CheckUIOverlap(InputAction.CallbackContext context)
         {
-            // Чекаємо до наступного кадру
             yield return null;
 
             bool isOverUI = false;
@@ -72,15 +70,16 @@ namespace PearlGem
             if (context.control is TouchControl touchControl)
             {
                 int touchId = touchControl.touchId.ReadValue();
-                // Для дотиків pointerId = touchId + 1
+                
                 isOverUI = EventSystem.current.IsPointerOverGameObject(touchId + 1);
+                if (isOverUI) yield break;
             }
             else if (context.control.device is Mouse)
             {
                 isOverUI = EventSystem.current.IsPointerOverGameObject();
+                if (isOverUI) yield break;
             }
-
-            // Якщо не над UI, почати прицілювання
+            
             if (!isOverUI)
             {
                 _isAiming = true;
